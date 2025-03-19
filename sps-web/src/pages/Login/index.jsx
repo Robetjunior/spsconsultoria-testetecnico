@@ -1,8 +1,8 @@
-// src/pages/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../services/api';
-import { useAuth } from '../context/AuthContext';
+import api from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
+import './Login.css'; // Importa o CSS específico
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,7 +13,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Chama o endpoint de autenticação (ex: POST /auth)
+      // Chama o endpoint de autenticação (ex: POST /auth/login)
       const response = await api.post('/auth/login', { email, password });
       login(response.data.token);
       navigate('/');
@@ -24,11 +24,12 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h2>Sign In</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email: </label>
+    <div className="login-container">
+      <form className="login-form" onSubmit={handleSubmit}>
+        <h2 className="login-title">Sign In</h2>
+
+        <div className="login-form-group">
+          <label>Email</label>
           <input 
             type="email"
             value={email}
@@ -36,8 +37,9 @@ const Login = () => {
             required
           />
         </div>
-        <div>
-          <label>Senha: </label>
+
+        <div className="login-form-group">
+          <label>Senha</label>
           <input 
             type="password"
             value={password}
@@ -45,7 +47,10 @@ const Login = () => {
             required
           />
         </div>
-        <button type="submit">Entrar</button>
+
+        <button className="login-submit-btn" type="submit">
+          Entrar
+        </button>
       </form>
     </div>
   );

@@ -1,0 +1,81 @@
+/* src/pages/Login.css */
+
+/* Container que ocupa a tela inteira e centraliza o form */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ocupa a tela verticalmente */
+    background-color: #f7f9fc; /* Tom claro, igual ao Dashboard */
+    font-family: 'Open Sans', sans-serif; /* Exemplo de fonte */
+  }
+  
+  /* Cartão do formulário */
+  .login-form {
+    background-color: #fff;
+    width: 320px;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Título do formulário */
+  .login-title {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+    color: #333;
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  /* Grupo de cada campo (label + input) */
+  .login-form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+  }
+  
+  /* Rótulo acima do input */
+  .login-form-group label {
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #555;
+  }
+  
+  /* Campo de texto */
+  .login-form-group input {
+    padding: 0.65rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+  }
+  
+  .login-form-group input:focus {
+    outline: none;
+    border-color: #3498db;
+  }
+  
+  /* Botão de submit */
+  .login-submit-btn {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #3498db; /* Mesma cor do Dashboard */
+    color: #fff;
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 8px;
+    text-align: center;
+  }
+  
+  .login-submit-btn:hover {
+    background-color: #2c80b4;
+  }
+  
