@@ -1,9 +1,10 @@
-// src/pages/Dashboard.jsx
 import React, { useState, useEffect } from 'react';
-import api from '../services/api';
-import UserModal from '../components/UserModal';
-import ConfirmModal from '../components/ConfirmModal/index.tsx';
-import { useAuth } from '../context/AuthContext';
+import { FiEdit, FiTrash2, FiUserPlus } from 'react-icons/fi';
+import api from '../../services/api';
+import UserModal from '../../components/UserModal';
+import ConfirmModal from '../../components/ConfirmModal/index.tsx';
+import { useAuth } from '../../context/AuthContext';
+import './Dashboard.css'; 
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
@@ -14,7 +15,6 @@ const Dashboard = () => {
 
   const { logout } = useAuth();
 
-  // Carrega a lista de usuários
   const fetchUsers = async () => {
     try {
       const response = await api.get('/users');
@@ -28,31 +28,26 @@ const Dashboard = () => {
     fetchUsers();
   }, []);
 
-  // Função para abrir modal de criação
   const handleCreate = () => {
     setEditingUser(null);
     setShowModal(true);
   };
 
-  // Função para abrir modal de edição
   const handleEdit = (user) => {
     setEditingUser(user);
     setShowModal(true);
   };
 
-  // Fecha o modal de criação/edição
   const handleCloseModal = () => {
     setShowModal(false);
     setEditingUser(null);
   };
 
-  // Quando clica em "Deletar", apenas abrimos o modal de confirmação
   const confirmDeleteUser = (userId) => {
     setUserToDelete(userId);
     setShowConfirm(true);
   };
 
-  // Se o usuário confirmar a deleção
   const handleConfirmDelete = async () => {
     if (userToDelete) {
       try {
@@ -66,13 +61,11 @@ const Dashboard = () => {
     setShowConfirm(false);
   };
 
-  // Se o usuário cancelar a deleção
   const handleCancelDelete = () => {
     setUserToDelete(null);
     setShowConfirm(false);
   };
 
-  // Salva os dados do formulário (criação/edição)
   const handleFormSubmit = async (userData) => {
     try {
       if (editingUser) {
@@ -88,12 +81,18 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
-      <h2>Dashboard</h2>
-      <button onClick={logout}>Sair</button>
-      <button onClick={handleCreate}>Criar Usuário</button>
+    <div className="dashboard-container">
+      <header className="dashboard-header">
+        <h2>Dashboard</h2>
+        <div className="header-actions">
+          <button className="logout-btn" onClick={logout}>Sair</button>
+          <button className="create-btn" onClick={handleCreate}>
+            <FiUserPlus size={18} style={{ marginRight: '4px' }}/>
+            Criar Usuário
+          </button>
+        </div>
+      </header>
 
-      {/* Modal para criação/edição de usuários */}
       <UserModal
         isOpen={showModal}
         onClose={handleCloseModal}
@@ -101,7 +100,6 @@ const Dashboard = () => {
         initialData={editingUser}
       />
 
-      {/* Modal de confirmação de exclusão */}
       <ConfirmModal
         isOpen={showConfirm}
         message="Tem certeza que deseja deletar este usuário?"
@@ -109,32 +107,44 @@ const Dashboard = () => {
         onConfirm={handleConfirmDelete}
       />
 
-      <h3>Lista de Usuários</h3>
-      <table border="1" cellPadding="5">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Tipo</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.type}</td>
-              <td>
-                <button onClick={() => handleEdit(user)}>Editar</button>
-                <button onClick={() => confirmDeleteUser(user.id)}>Deletar</button>
-              </td>
+      <section className="user-list-section">
+        <h3>Lista de Usuários</h3>
+        <table className="user-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Tipo</th>
+              <th>Ações</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id}>
+                <td>{user.id}</td>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>{user.type}</td>
+                <td>
+                  <button
+                    className="action-btn edit-btn"
+                    onClick={() => handleEdit(user)}
+                  >
+                    <FiEdit />
+                  </button>
+                  <button
+                    className="action-btn delete-btn"
+                    onClick={() => confirmDeleteUser(user.id)}
+                  >
+                    <FiTrash2 />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
     </div>
   );
 };
