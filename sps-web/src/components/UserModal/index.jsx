@@ -7,7 +7,7 @@ const UserModal = ({ isOpen, onClose, onSubmit, initialData }) => {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
+      <div className="modal-content user-modal-content">
         <button className="close-btn" onClick={onClose}>
           X
         </button>
