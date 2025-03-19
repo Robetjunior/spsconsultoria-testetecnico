@@ -7,7 +7,7 @@ const userRoutes = require('./src/routes/userRoutes');
 const app = express();
 
 // Middlewares globais
-app.use(cors()); // Habilita CORS para todas as origens
+app.use(cors()); 
 app.use(express.json());
 app.use(morgan('dev'));
 

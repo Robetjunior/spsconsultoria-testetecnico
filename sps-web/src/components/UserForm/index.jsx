@@ -72,10 +72,6 @@ const UserForm = ({ onSubmit, initialData }) => {
 
   return (
     <form className="user-form" onSubmit={handleSubmit}>
-      <h3 className="form-title">
-        {initialData ? 'Editar Usuário' : 'Cadastrar Usuário'}
-      </h3>
-
       <div className="form-group floating-label">
         <input
           type="text"
