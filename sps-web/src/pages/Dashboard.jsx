@@ -1,14 +1,15 @@
-// src/pages/Dashboard.jsx
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
-import UserForm from '../components/UserForm';
+import UserModal from '../components/UserModal';
 import { useAuth } from '../context/AuthContext';
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const { logout } = useAuth();
 
+  // Busca todos os usuários
   const fetchUsers = async () => {
     try {
       const response = await api.get('/users');
@@ -22,6 +23,7 @@ const Dashboard = () => {
     fetchUsers();
   }, []);
 
+  // Deleta usuário
   const handleDelete = async (id) => {
     if(window.confirm('Tem certeza que deseja deletar?')){
       try {
@@ -33,19 +35,36 @@ const Dashboard = () => {
     }
   };
 
+  // Abre o modal para editar
   const handleEdit = (user) => {
     setEditingUser(user);
+    setShowModal(true);
   };
 
+  // Abre o modal para criar novo usuário
+  const handleCreate = () => {
+    setEditingUser(null); 
+    setShowModal(true);
+  };
+
+  // Fecha o modal (usado após salvar ou cancelar)
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setEditingUser(null);
+  };
+
+  // Submete dados do formulário (criação ou edição)
   const handleFormSubmit = async (userData) => {
     try {
       if(editingUser) {
+        // Edição
         await api.put(`/users/${editingUser.id}`, userData);
       } else {
+        // Criação
         await api.post('/users', userData);
       }
-      setEditingUser(null);
       fetchUsers();
+      handleCloseModal();
     } catch (error) {
       console.error('Erro ao salvar usuário', error);
     }
@@ -55,11 +74,17 @@ const Dashboard = () => {
     <div>
       <h2>Dashboard</h2>
       <button onClick={logout}>Sair</button>
-      <UserForm 
-        onSubmit={handleFormSubmit} 
+      {/* Botão para criar um novo usuário */}
+      <button onClick={handleCreate}>Criar Usuário</button>
+
+      {/* Modal para criação/edição */}
+      <UserModal
+        isOpen={showModal}
+        onClose={handleCloseModal}
+        onSubmit={handleFormSubmit}
         initialData={editingUser}
-        key={editingUser ? editingUser.id : 'new'}
       />
+
       <h3>Lista de Usuários</h3>
       <table border="1" cellPadding="5">
         <thead>
@@ -72,7 +97,7 @@ const Dashboard = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map(user => (
+          {users.map((user) => (
             <tr key={user.id}>
               <td>{user.id}</td>
               <td>{user.name}</td>
