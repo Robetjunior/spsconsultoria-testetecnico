@@ -1,4 +1,3 @@
-// src/services/userService.js
 const { v4: uuidv4 } = require('uuid');
 const usersRepository = require('../repository/usersRepository');
 
@@ -6,12 +5,15 @@ function createUser({ name, email, type, password }) {
   if (usersRepository.findByEmail(email)) {
     throw new Error('Email já cadastrado');
   }
+  const now = new Date().toISOString();
   const newUser = {
     id: uuidv4(),
     name,
     email,
     type,
-    password
+    password,
+    created_at: now,
+    updated_at: now,
   };
   usersRepository.addUser(newUser);
   return newUser;
@@ -37,7 +39,7 @@ function deleteUser(id) {
   if (!user) {
     throw new Error('Usuário não encontrado');
   }
-  usersRepository.removeUser(id);
+  return usersRepository.removeUser(id);
 }
 
 module.exports = { createUser, getUsers, updateUser, deleteUser };

@@ -2,70 +2,92 @@ const { v4: uuidv4 } = require('uuid');
 
 let users = [];
 
-// Usuário admin previamente cadastrado
+// Define o timestamp atual para o usuário admin
+const now = new Date().toISOString();
+
+// Usuário admin previamente cadastrado com created_at e updated_at
 users.push({
   id: uuidv4(),
   name: 'admin',
   email: 'admin@spsgroup.com.br',
   type: 'admin',
-  password: '1234'
+  password: '1234',
+  created_at: now,
+  updated_at: now,
 });
 
-module.exports = {
-  /**
-   * Retorna uma cópia do array de usuários para evitar modificações externas.
-   */
-  getUsers: () => [...users],
+/**
+ * Retorna uma cópia do array de usuários.
+ * @returns {Array} - Lista de usuários.
+ */
+function getUsers() {
+  console.log('Retornando usuários:', users);
+  return [...users];
+}
 
-  /**
-   * Adiciona um novo usuário.
-   * @param {Object} user - Objeto de usuário.
-   */
-  addUser: (user) => {
-    // Você pode adicionar validações aqui se necessário.
-    users.push(user);
-  },
+/**
+ * Adiciona um novo usuário e define os campos created_at e updated_at.
+ * @param {Object} user - Objeto de usuário.
+ */
+function addUser(user) {
+  users.push(user);
+}
 
-  /**
-   * Procura um usuário pelo email.
-   * @param {string} email - Email do usuário.
-   * @returns {Object | undefined}
-   */
-  findByEmail: (email) => users.find(u => u.email === email),
+/**
+ * Procura um usuário pelo email.
+ * @param {string} email - Email do usuário.
+ * @returns {Object | undefined}
+ */
+function findByEmail(email) {
+  return users.find(u => u.email === email);
+}
 
-  /**
-   * Procura um usuário pelo id.
-   * @param {string} id - ID do usuário.
-   * @returns {Object | undefined}
-   */
-  findById: (id) => users.find(u => u.id === id),
+/**
+ * Procura um usuário pelo id.
+ * @param {string} id - ID do usuário.
+ * @returns {Object | undefined}
+ */
+function findById(id) {
+  return users.find(u => u.id === id);
+}
 
-  /**
-   * Atualiza os dados de um usuário com base no id.
-   * @param {string} id - ID do usuário.
-   * @param {Object} userData - Dados para atualizar.
-   * @returns {Object | null} - Usuário atualizado ou null se não encontrado.
-   */
-  updateUser: (id, userData) => {
-    const index = users.findIndex(u => u.id === id);
-    if (index !== -1) {
-      users[index] = { ...users[index], ...userData };
-      return users[index];
-    }
-    return null;
-  },
-
-  /**
-   * Remove um usuário pelo id.
-   * @param {string} id - ID do usuário.
-   * @returns {Object | null} - Usuário removido ou null se não encontrado.
-   */
-  removeUser: (id) => {
-    const index = users.findIndex(u => u.id === id);
-    if (index !== -1) {
-      // Retorna o usuário removido (primeiro elemento do array retornado pelo splice)
-      return users.splice(index, 1)[0];
-    }
-    return null;
+/**
+ * Atualiza os dados de um usuário, preservando o created_at e atualizando o updated_at.
+ * @param {string} id - ID do usuário.
+ * @param {Object} userData - Dados para atualizar.
+ * @returns {Object | null} - Usuário atualizado ou null se não encontrado.
+ */
+function updateUser(id, userData) {
+  const index = users.findIndex(u => u.id === id);
+  if (index !== -1) {
+    users[index] = {
+      ...users[index],
+      ...userData,
+      updated_at: new Date().toISOString(),
+    };
+    return users[index];
   }
+  return null;
+}
+
+/**
+ * Remove um usuário pelo id.
+ * @param {string} id - ID do usuário.
+ * @returns {Object | null} - Usuário removido ou null se não encontrado.
+ */
+function removeUser(id) {
+  const index = users.findIndex(u => u.id === id);
+  if (index !== -1) {
+    return users.splice(index, 1)[0];
+  }
+  return null;
+}
+
+module.exports = {
+  getUsers,
+  addUser,
+  findByEmail,
+  findById,
+  updateUser,
+  removeUser,
 };
