@@ -14,7 +14,7 @@ const Login = () => {
     e.preventDefault();
     try {
       // Chama o endpoint de autenticação (ex: POST /auth)
-      const response = await api.post('/auth', { email, password });
+      const response = await api.post('/auth/login', { email, password });
       login(response.data.token);
       navigate('/');
     } catch (error) {
