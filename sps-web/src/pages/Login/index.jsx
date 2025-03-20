@@ -1,33 +1,41 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'; 
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
-import './Login.css'; // Importa o CSS específico
+import './Login.css'; 
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false); 
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      // Chama o endpoint de autenticação (ex: POST /auth/login)
-      const response = await api.post('/auth/login', { email, password });
-      login(response.data.token);
-      navigate('/');
-    } catch (error) {
-      console.error('Erro de login', error);
-      alert('Falha na autenticação');
-    }
+    setLoading(true);
+
+    setTimeout(async () => {
+      try {
+        const response = await api.post('/auth/login', { email, password });
+        login(response.data.token);
+
+        toast.success('Login realizado com sucesso!');
+        navigate('/');
+      } catch (error) {
+        console.error('Erro de login', error);
+        toast.error('Falha na autenticação');
+      } finally {
+        setLoading(false);
+      }
+    }, 1000);
   };
 
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
-        <h2 className="login-title">Sign In</h2>
-
+        <h2 className="login-title">Login</h2>
         <div className="login-form-group">
           <label>Email</label>
           <input 
@@ -35,6 +43,7 @@ const Login = () => {
             value={email}
             onChange={(e)=> setEmail(e.target.value)}
             required
+            disabled={loading} 
           />
         </div>
 
@@ -45,11 +54,12 @@ const Login = () => {
             value={password}
             onChange={(e)=> setPassword(e.target.value)}
             required
+            disabled={loading}
           />
         </div>
 
-        <button className="login-submit-btn" type="submit">
-          Entrar
+        <button className="login-submit-btn" type="submit" disabled={loading}>
+          {loading ? 'Carregando...' : 'Entrar'}
         </button>
       </form>
     </div>

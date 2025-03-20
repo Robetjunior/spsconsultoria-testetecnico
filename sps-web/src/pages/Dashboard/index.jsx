@@ -5,6 +5,7 @@ import UserModal from '../../components/UserModal';
 import ConfirmModal from '../../components/ConfirmModal/index.tsx';
 import { useAuth } from '../../context/AuthContext';
 import './Dashboard.css'; 
+import { toast } from 'react-toastify';
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
@@ -13,12 +14,11 @@ const Dashboard = () => {
   const [showConfirm, setShowConfirm] = useState(false); 
   const [userToDelete, setUserToDelete] = useState(null);
 
-  // Novo estado para a pesquisa
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const { logout } = useAuth();
 
-  // Carrega todos os usuários
   const fetchUsers = async () => {
     try {
       const response = await api.get('/users');
@@ -32,66 +32,83 @@ const Dashboard = () => {
     fetchUsers();
   }, []);
 
-  // Abre o modal para criar novo usuário
+  
   const handleCreate = () => {
     setEditingUser(null);
     setShowModal(true);
   };
 
-  // Abre o modal para editar usuário
+  
   const handleEdit = (user) => {
     setEditingUser(user);
     setShowModal(true);
   };
 
-  // Fecha o modal de criação/edição
+  
   const handleCloseModal = () => {
     setShowModal(false);
     setEditingUser(null);
   };
 
-  // Confirmação de deleção
+  
   const confirmDeleteUser = (userId) => {
     setUserToDelete(userId);
     setShowConfirm(true);
   };
 
-  // Deleção efetiva
+  
   const handleConfirmDelete = async () => {
-    if (userToDelete) {
-      try {
-        await api.delete(`/users/${userToDelete}`);
-        fetchUsers();
-      } catch (error) {
-        console.error('Erro ao deletar usuário', error);
-      }
+    if (!userToDelete) return;
+  
+    setLoading(true);
+  
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      await api.delete(`/users/${userToDelete}`);
+  
+      toast.success('Usuário deletado com sucesso!');
+      fetchUsers();
+    } catch (error) {
+      console.error('Erro ao deletar usuário', error);
+      toast.error('Falha ao deletar usuário');
+    } finally {
+      setLoading(false);
+      setUserToDelete(null);
+      setShowConfirm(false);
     }
-    setUserToDelete(null);
-    setShowConfirm(false);
   };
 
-  // Cancela a deleção
+  
   const handleCancelDelete = () => {
     setUserToDelete(null);
     setShowConfirm(false);
   };
 
-  // Submete o formulário de criação/edição
+  
   const handleFormSubmit = async (userData) => {
-    try {
-      if (editingUser) {
-        await api.put(`/users/${editingUser.id}`, userData);
-      } else {
-        await api.post('/users', userData);
+    setLoading(true);
+  
+    setTimeout(async () => {
+      try {
+        if (editingUser) {
+          await api.put(`/users/${editingUser.id}`, userData);
+          toast.success('Usuário atualizado com sucesso!');
+        } else {
+          await api.post('/users', userData);
+          toast.success('Usuário criado com sucesso!');
+        }
+        fetchUsers();
+        handleCloseModal();
+      } catch (error) {
+        console.error('Erro ao salvar usuário', error);
+        toast.error('Falha ao salvar usuário');
+      } finally {
+        setLoading(false);
       }
-      fetchUsers();
-      handleCloseModal();
-    } catch (error) {
-      console.error('Erro ao salvar usuário', error);
-    }
+    }, 1000);
   };
 
-  // Filtra usuários pelo termo de busca (nome ou email)
+  
   const filteredUsers = users.filter((user) => {
     const term = searchTerm.toLowerCase();
     return (
@@ -103,7 +120,6 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        {/* Barra de pesquisa no lugar do título */}
         <div className="search-bar">
           <FiSearch size={20} className="search-icon" />
           <input
@@ -116,27 +132,27 @@ const Dashboard = () => {
 
         <div className="header-actions">
           <button className="logout-btn" onClick={logout}>Sair</button>
-          <button className="create-btn" onClick={handleCreate}>
+          <button className="create-btn" onClick={handleCreate} disabled={loading}>
             <FiUserPlus size={18} style={{ marginRight: '4px' }}/>
-            Criar Usuário
+            {loading ? 'Processando...' : 'Criar Usuário'}
           </button>
         </div>
       </header>
 
-      {/* Modal de criação/edição */}
       <UserModal
         isOpen={showModal}
         onClose={handleCloseModal}
         onSubmit={handleFormSubmit}
         initialData={editingUser}
+        loading={loading}
       />
 
-      {/* Modal de confirmação de exclusão */}
       <ConfirmModal
         isOpen={showConfirm}
         message="Tem certeza que deseja deletar este usuário?"
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
+        loading={loading}
       />
 
       <section className="user-list-section">
@@ -162,12 +178,14 @@ const Dashboard = () => {
                   <button
                     className="action-btn edit-btn"
                     onClick={() => handleEdit(user)}
+                    disabled={loading}
                   >
                     <FiEdit />
                   </button>
                   <button
                     className="action-btn delete-btn"
                     onClick={() => confirmDeleteUser(user.id)}
+                    disabled={loading}
                   >
                     <FiTrash2 />
                   </button>

@@ -1,20 +1,23 @@
+
 import React, { useState, useEffect } from 'react';
 import './UserForm.css';
+
+
+const Spinner = () => {
+  return <div className="spinner" />;
+};
 
 const isValidEmail = (email) => {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(String(email).toLowerCase());
 };
 
-const UserForm = ({ onSubmit, initialData }) => {
+const UserForm = ({ onSubmit, initialData, loading }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [type, setType] = useState('');
   const [password, setPassword] = useState('');
-
-
   const [errors, setErrors] = useState({});
-
 
   useEffect(() => {
     if (initialData) {
@@ -28,13 +31,11 @@ const UserForm = ({ onSubmit, initialData }) => {
       setType('');
       setPassword('');
     }
-
     setErrors({});
   }, [initialData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
 
     let tempErrors = {};
 
@@ -53,21 +54,11 @@ const UserForm = ({ onSubmit, initialData }) => {
       tempErrors.password = 'Senha é obrigatória para novo usuário.';
     }
 
-
     if (Object.keys(tempErrors).length > 0) {
       setErrors(tempErrors);
       return;
     }
-
-
     onSubmit({ name, email, type, password });
-
-
-    setName('');
-    setEmail('');
-    setType('');
-    setPassword('');
-    setErrors({});
   };
 
   return (
@@ -78,11 +69,10 @@ const UserForm = ({ onSubmit, initialData }) => {
           placeholder=" "
           value={name}
           onChange={(e) => setName(e.target.value)}
+          disabled={loading}  
         />
         <label>Nome</label>
-        {errors.name && (
-          <span className="error-msg">{errors.name}</span>
-        )}
+        {errors.name && <span className="error-msg">{errors.name}</span>}
       </div>
 
       <div className="form-group floating-label">
@@ -91,6 +81,7 @@ const UserForm = ({ onSubmit, initialData }) => {
           placeholder=" "
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          disabled={loading}
         />
         <label>Email</label>
         {errors.email && <span className="error-msg">{errors.email}</span>}
@@ -102,6 +93,7 @@ const UserForm = ({ onSubmit, initialData }) => {
           placeholder=" "
           value={type}
           onChange={(e) => setType(e.target.value)}
+          disabled={loading}
         />
         <label>Tipo</label>
         {errors.type && <span className="error-msg">{errors.type}</span>}
@@ -113,13 +105,18 @@ const UserForm = ({ onSubmit, initialData }) => {
           placeholder=" "
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          disabled={loading}
         />
         <label>Senha</label>
         {errors.password && <span className="error-msg">{errors.password}</span>}
       </div>
 
-      <button className="submit-btn" type="submit">
-        {initialData ? 'Atualizar' : 'Cadastrar'}
+      <button className="submit-btn" type="submit" disabled={loading}>
+        {loading ? (
+            <Spinner />
+        ) : (
+          initialData ? 'Atualizar' : 'Cadastrar'
+        )}
       </button>
     </form>
   );
