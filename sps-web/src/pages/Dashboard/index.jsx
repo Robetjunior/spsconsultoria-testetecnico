@@ -67,8 +67,14 @@ const Dashboard = () => {
 
   const handleConfirmDelete = async () => {
     if (!userToDelete) return;
+    
+    if (userToDelete === user?.id) {
+      toast.error('Você não pode deletar o usuário atualmente logado!');
+      return; 
+    }
+  
     setLoading(true);
-
+  
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
       await api.delete(`/users/${userToDelete}`);
