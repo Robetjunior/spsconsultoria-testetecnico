@@ -1,4 +1,3 @@
-// src/components/UserModal/UserModal.jsx
 import React from 'react';
 import UserForm from '../UserForm';
 import './UserModal.css';

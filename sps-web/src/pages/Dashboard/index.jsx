@@ -24,7 +24,6 @@ const Dashboard = () => {
   const fetchUsers = async () => {
     try {
       const response = await api.get('/users');
-      console.log(response.data)
       setUsers(response.data);
     } catch (error) {
       console.error('Erro ao buscar usuários', error);
@@ -46,7 +45,6 @@ const Dashboard = () => {
   };
 
   const openEditProfile = () => {
-    console.log(user)
     setEditingUser(user); 
     setShowModal(true);
   };

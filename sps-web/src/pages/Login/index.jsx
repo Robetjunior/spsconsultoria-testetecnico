@@ -20,7 +20,6 @@ const Login = () => {
       try {
         const response = await api.post('/auth/login', { email, password });
         const { token, user } = response.data;
-        console.log(response.data)
         login(token, user);
   
         toast.success('Login realizado com sucesso!');

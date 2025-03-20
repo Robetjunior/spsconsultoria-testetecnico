@@ -1,4 +1,3 @@
-// src/services/authService.js
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const usersRepository = require('../repository/usersRepository');
