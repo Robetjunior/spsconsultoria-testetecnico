@@ -132,7 +132,6 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <header className="dashboard-header">
         <div className="search-bar">
-          <FiSearch size={20} className="search-icon" />
           <input
             type="text"
             placeholder="Buscar usuário..."
@@ -144,6 +143,7 @@ const Dashboard = () => {
               X
             </button>
           )}
+
         </div>
 
         <div className="profile-menu">
