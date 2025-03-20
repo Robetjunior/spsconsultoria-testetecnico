@@ -1,6 +1,3 @@
-
-
-
 .login-container {
     display: flex;
     justify-content: center;
@@ -9,7 +6,6 @@
     background-color: #f7f9fc; 
     font-family: 'Open Sans', sans-serif; 
   }
-  
   
   .login-form {
     background-color: #fff;
@@ -21,7 +17,6 @@
     flex-direction: column;
   }
   
-  
   .login-title {
     font-size: 1.5rem;
     margin-bottom: 16px;
@@ -30,20 +25,17 @@
     text-align: center;
   }
   
-  
   .login-form-group {
     display: flex;
     flex-direction: column;
     margin-bottom: 16px;
   }
   
-  
   .login-form-group label {
     font-weight: 500;
     margin-bottom: 8px;
     color: #555;
   }
-  
   
   .login-form-group input {
     padding: 0.65rem;
@@ -58,7 +50,6 @@
     border-color: #3498db;
   }
   
-  
   .login-submit-btn {
     display: inline-block;
     width: 100%;
@@ -70,17 +61,13 @@
     color: #fff;
     cursor: pointer;
     text-align: center;
-    /* Faz transição suave de background */
     transition: background 0.3s ease;
-  
-    /* Gradiente normal (primeira imagem) */
     background: linear-gradient(90deg, #111DA1 0%, #05BDC7 100%);
     box-shadow: 0 3px 6px rgba(0,0,0,0.15);
     margin-top: 8px;
   }
   
   .login-submit-btn:hover {
-    /* Mantém gradiente, só troca as cores (segunda imagem) */
     background: linear-gradient(90deg, #3498db 0%, #3498db 100%);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   }

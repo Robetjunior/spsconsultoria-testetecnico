@@ -15,12 +15,14 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+  
     setTimeout(async () => {
       try {
         const response = await api.post('/auth/login', { email, password });
-        login(response.data.token);
-
+        const { token, user } = response.data;
+        console.log(response.data)
+        login(token, user);
+  
         toast.success('Login realizado com sucesso!');
         navigate('/');
       } catch (error) {
@@ -31,6 +33,7 @@ const Login = () => {
       }
     }, 1000);
   };
+
 
   return (
     <div className="login-container">

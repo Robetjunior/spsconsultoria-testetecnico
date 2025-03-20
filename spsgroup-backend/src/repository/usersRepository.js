@@ -2,10 +2,8 @@ const { v4: uuidv4 } = require('uuid');
 
 let users = [];
 
-// Define o timestamp atual para o usuário admin
 const now = new Date().toISOString();
 
-// Usuário admin previamente cadastrado com created_at e updated_at
 users.push({
   id: uuidv4(),
   name: 'admin',

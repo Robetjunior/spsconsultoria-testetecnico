@@ -4,20 +4,31 @@ import React, { createContext, useContext, useState } from 'react';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(() => localStorage.getItem('token') || null);
+  // Em vez de apenas 'token', guardamos { token, user }
+  const [authData, setAuthData] = useState(() => {
+    // Tenta ler do localStorage ao iniciar
+    const stored = localStorage.getItem('authData');
+    return stored ? JSON.parse(stored) : { token: null, user: null };
+  });
 
-  const login = (tokenValue) => {
-    setToken(tokenValue);
-    localStorage.setItem('token', tokenValue);
+  // Se preferir, pode usar authData.token, authData.user
+  const token = authData.token;
+  const user = authData.user;
+
+  const login = (tokenValue, userValue) => {
+    // Cria objeto { token, user }
+    const newAuthData = { token: tokenValue, user: userValue };
+    setAuthData(newAuthData);
+    localStorage.setItem('authData', JSON.stringify(newAuthData));
   };
 
   const logout = () => {
-    setToken(null);
-    localStorage.removeItem('token');
+    setAuthData({ token: null, user: null });
+    localStorage.removeItem('authData');
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout }}>
+    <AuthContext.Provider value={{ token, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

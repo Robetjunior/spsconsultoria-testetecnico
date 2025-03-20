@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiEdit, FiTrash2, FiUserPlus, FiSearch } from 'react-icons/fi';
+import { FiEdit, FiTrash2, FiUserPlus, FiSearch, FiChevronDown } from 'react-icons/fi';
 import api from '../../services/api';
 import UserModal from '../../components/UserModal';
 import ConfirmModal from '../../components/ConfirmModal/index.tsx';
@@ -10,18 +10,21 @@ import { toast } from 'react-toastify';
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
-  const [showModal, setShowModal] = useState(false);    
-  const [showConfirm, setShowConfirm] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { logout } = useAuth();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const { logout, user } = useAuth(); 
 
   const fetchUsers = async () => {
     try {
       const response = await api.get('/users');
+      console.log(response.data)
       setUsers(response.data);
     } catch (error) {
       console.error('Erro ao buscar usuários', error);
@@ -32,40 +35,43 @@ const Dashboard = () => {
     fetchUsers();
   }, []);
 
-  
   const handleCreate = () => {
     setEditingUser(null);
     setShowModal(true);
   };
 
-  
-  const handleEdit = (user) => {
-    setEditingUser(user);
+  const handleEdit = (u) => {
+    setEditingUser(u);
     setShowModal(true);
   };
 
-  
+  const openEditProfile = () => {
+    console.log(user)
+    setEditingUser(user); 
+    setShowModal(true);
+  };
+
   const handleCloseModal = () => {
     setShowModal(false);
     setEditingUser(null);
   };
 
-  
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
   const confirmDeleteUser = (userId) => {
     setUserToDelete(userId);
     setShowConfirm(true);
   };
 
-  
   const handleConfirmDelete = async () => {
     if (!userToDelete) return;
-  
     setLoading(true);
-  
+
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
       await api.delete(`/users/${userToDelete}`);
-  
       toast.success('Usuário deletado com sucesso!');
       fetchUsers();
     } catch (error) {
@@ -78,16 +84,14 @@ const Dashboard = () => {
     }
   };
 
-  
   const handleCancelDelete = () => {
     setUserToDelete(null);
     setShowConfirm(false);
   };
 
-  
   const handleFormSubmit = async (userData) => {
     setLoading(true);
-  
+
     setTimeout(async () => {
       try {
         if (editingUser) {
@@ -108,14 +112,17 @@ const Dashboard = () => {
     }, 1000);
   };
 
-  
-  const filteredUsers = users.filter((user) => {
+  const filteredUsers = users.filter((u) => {
     const term = searchTerm.toLowerCase();
     return (
-      user.name.toLowerCase().includes(term) ||
-      user.email.toLowerCase().includes(term)
+      u.name.toLowerCase().includes(term) ||
+      u.email.toLowerCase().includes(term)
     );
   });
+
+  const handleClearSearch = () => {
+    setSearchTerm('');
+  };
 
   return (
     <div className="dashboard-container">
@@ -128,14 +135,26 @@ const Dashboard = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+          {searchTerm && (
+            <button className="clear-btn" onClick={handleClearSearch}>
+              X
+            </button>
+          )}
         </div>
 
-        <div className="header-actions">
-          <button className="logout-btn" onClick={logout}>Sair</button>
-          <button className="create-btn" onClick={handleCreate} disabled={loading}>
-            <FiUserPlus size={18} style={{ marginRight: '4px' }}/>
-            {loading ? 'Processando...' : 'Criar Usuário'}
-          </button>
+        <div className="profile-menu">
+          <div className="profile-info" onClick={toggleDropdown}>
+            <span className="profile-name">{user?.name || 'Usuário'}</span>
+            <span className="profile-email">{user?.email || ''}</span>
+            <FiChevronDown className="profile-arrow" />
+          </div>
+
+          {isDropdownOpen && (
+            <div className="profile-dropdown">
+              <button onClick={openEditProfile}>Atualizar Perfil</button>
+              <button onClick={logout}>Sair</button>
+            </div>
+          )}
         </div>
       </header>
 
@@ -156,7 +175,18 @@ const Dashboard = () => {
       />
 
       <section className="user-list-section">
-        <h3>Lista de Usuários</h3>
+        <div className="section-header">
+          <h3>Lista de Usuários</h3>
+          <button
+            className="create-btn"
+            onClick={handleCreate}
+            disabled={loading}
+          >
+            <FiUserPlus size={18} style={{ marginRight: '4px' }}/>
+            {loading ? 'Processando...' : 'Criar Usuário'}
+          </button>
+        </div>
+
         <table className="user-table">
           <thead>
             <tr>
@@ -168,23 +198,23 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.map((user) => (
-              <tr key={user.id}>
-                <td>{user.id}</td>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>{user.type}</td>
+            {filteredUsers.map((u, i) => (
+              <tr key={u.id}>
+                <td>{i + 1}</td>
+                <td>{u.name}</td>
+                <td>{u.email}</td>
+                <td>{u.type}</td>
                 <td>
                   <button
                     className="action-btn edit-btn"
-                    onClick={() => handleEdit(user)}
+                    onClick={() => handleEdit(u)}
                     disabled={loading}
                   >
                     <FiEdit />
                   </button>
                   <button
                     className="action-btn delete-btn"
-                    onClick={() => confirmDeleteUser(user.id)}
+                    onClick={() => confirmDeleteUser(u.id)}
                     disabled={loading}
                   >
                     <FiTrash2 />

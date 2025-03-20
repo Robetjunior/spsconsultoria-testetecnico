@@ -8,9 +8,10 @@ const api = axios.create({
 // Interceptor para adicionar o token no header de todas as requisições
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+    // Supondo que o login armazene um objeto { token, user } na chave 'authData'
+    const authData = JSON.parse(localStorage.getItem('authData'));
+    if (authData && authData.token) {
+      config.headers['Authorization'] = `Bearer ${authData.token}`;
     }
     return config;
   },
