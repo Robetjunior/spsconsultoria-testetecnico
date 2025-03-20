@@ -16,16 +16,16 @@ users.push({
 
 // Adicionando 10 usuários fictícios
 const fakeUsers = [
-  { name: 'João Silva', email: 'joao.silva@example.com', type: 'user' },
-  { name: 'Maria Souza', email: 'maria.souza@example.com', type: 'user' },
-  { name: 'Carlos Pereira', email: 'carlos.pereira@example.com', type: 'user' },
-  { name: 'Ana Oliveira', email: 'ana.oliveira@example.com', type: 'user' },
-  { name: 'Rafael Costa', email: 'rafael.costa@example.com', type: 'user' },
-  { name: 'Julia Mendes', email: 'julia.mendes@example.com', type: 'user' },
-  { name: 'Fernando Lima', email: 'fernando.lima@example.com', type: 'user' },
-  { name: 'Larissa Martins', email: 'larissa.martins@example.com', type: 'user' },
-  { name: 'Gustavo Araujo', email: 'gustavo.araujo@example.com', type: 'user' },
-  { name: 'Paula Ribeiro', email: 'paula.ribeiro@example.com', type: 'user' },
+  { name: 'João Silva', email: 'joao.silva@spsgroup.com.br', type: 'user' },
+  { name: 'Maria Souza', email: 'maria.souza@spsgroup.com.br', type: 'user' },
+  { name: 'Carlos Pereira', email: 'carlos.pereira@spsgroup.com.br', type: 'user' },
+  { name: 'Ana Oliveira', email: 'ana.oliveira@spsgroup.com.br', type: 'user' },
+  { name: 'Rafael Costa', email: 'rafael.costa@spsgroup.com.br', type: 'user' },
+  { name: 'Julia Mendes', email: 'julia.mendes@spsgroup.com.br', type: 'user' },
+  { name: 'Fernando Lima', email: 'fernando.lima@spsgroup.com.br', type: 'user' },
+  { name: 'Larissa Martins', email: 'larissa.martins@spsgroup.com.br', type: 'user' },
+  { name: 'Gustavo Araujo', email: 'gustavo.araujo@spsgroup.com.br', type: 'user' },
+  { name: 'Paula Ribeiro', email: 'paula.ribeiro@spsgroup.com.br', type: 'user' },
 ];
 
 fakeUsers.forEach(user => {
