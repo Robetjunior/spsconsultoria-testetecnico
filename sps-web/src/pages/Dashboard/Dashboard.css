@@ -2,13 +2,15 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px;
-  background-color: #f7f9fc;
-  min-height: 100vh;
+  background-color: #E8F0FF;
+  min-height: 80vh;
   font-family: 'Open Sans', sans-serif;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .profile-menu {
-  position: relative; /* Para posicionar o dropdown */
+  position: relative;
   display: flex;
   align-items: center;
 }
@@ -18,7 +20,7 @@
   flex-direction: column;
   align-items: flex-end;
   cursor: pointer;
-  margin-left: 16px; /* espaço entre a search-bar e o profile */
+  margin-left: 16px;
 }
 
 .profile-name {
@@ -27,14 +29,12 @@
   color: #0B0A86;
 }
 
-/* Email em tom mais claro */
 .profile-email {
   font-size: 0.85rem;
   color: #2B76F0;
   margin-top: -2px;
 }
 
-/* Seta para baixo */
 .profile-arrow {
   margin-top: 4px;
   color: #0B0A86;
@@ -42,17 +42,16 @@
 
 .profile-dropdown {
   position: absolute;
-  top: 60px; /* Ajuste conforme a altura do header */
+  top: 60px;
   right: 0;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  background: white;
+  border: 1px solid #2B76F0;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
   display: flex;
   flex-direction: column;
-  width: 160px; /* Ajuste a largura se quiser maior/menor */
+  width: 180px;
   z-index: 999;
-  padding: 4px 0;
 }
 
 .profile-dropdown button {
@@ -61,14 +60,15 @@
   cursor: pointer;
   text-align: left;
   font-size: 0.95rem;
-  color: #0B0A86;    /* Azul-escuro */
-  padding: 8px 16px;
+  color: #0B0A86;
+  padding: 12px;
   width: 100%;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s;
+  border-radius: 8px;
 }
 
 .profile-dropdown button:hover {
-  background-color: #f2f2f2;
+  background-color: #E0E6F5;
 }
 
 .dashboard-header {
@@ -78,20 +78,19 @@
   margin-bottom: 24px;
 }
 
-/* Caixa de busca */
 .search-bar {
   position: relative;
-  width: 280px;
+  width: 300px;
 }
 
 .search-bar input {
   width: 100%;
-  padding: 8px 32px 8px 12px; /* espaço para o botão clear */
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 8px 40px 8px 12px;
+  border: 1px solid #2B76F0;
+  border-radius: 8px;
+  background-color: white;
   font-size: 0.95rem;
-  transition: border-color 0.2s;
-  background-color: #f6f7fb;
+  transition: border-color 0.3s;
   color: #0B0A86;
 }
 
@@ -101,70 +100,37 @@
 
 .search-bar input:focus {
   outline: none;
-  border-color: #2B76F0;
+  border-color: #0B0A86;
 }
 
 .search-icon {
   position: absolute;
   top: 50%;
-  right: 8px; /* Ícone bem à direita */
+  right: 12px;
   transform: translateY(-50%);
-  color: #888;
-  z-index: 1;
+  color: #0B0A86;
 }
 
 .clear-btn {
   position: absolute;
   top: 50%;
-  right: 40px; /* Ajuste para ficar à esquerda do ícone */
+  right: 40px;
   transform: translateY(-50%);
-  background: #2B76F0;
-  color: #fff;
+  background: #0B0A86;
+  color: white;
   border: none;
-  border-radius: 4px;
-  padding: 0 8px;
+  border-radius: 8px;
+  padding: 2px 6px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.85rem;
   line-height: 1;
-  z-index: 2; /* Fica acima do ícone */
-  transition: background-color 0.2s;
+  transition: background-color 0.3s;
 }
-
 
 .clear-btn:hover {
-  background-color: #0B0A86;
-  color: #fff;
+  background-color: #2B76F0;
 }
 
-/* Ações no header (botão de sair, etc.) */
-.header-actions {
-  display: flex;
-  gap: 12px;
-}
-
-.logout-btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  background-color: #ccc;
-  color: #333;
-  transition: background-color 0.2s;
-}
-
-.logout-btn:hover {
-  background-color: #bbb;
-}
-
-/* Seção principal da lista de usuários */
-.user-list-section {
-  background-color: #fff;
-  padding: 16px;
-  border-radius: 8px;
-}
-
-/* Título e botão criar usuário na mesma linha */
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -172,33 +138,37 @@
   margin-bottom: 16px;
 }
 
-/* Botão criar usuário */
 .create-btn {
-  background-color: #0B0A86; 
-  color: #fff;
+  background-color: #0B0A86;
+  color: white;
   display: flex;
   align-items: center;
-  padding: 8px 16px;
+  padding: 10px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s, color 0.2s;
+  font-weight: 600;
+  transition: background-color 0.3s;
 }
 
 .create-btn:hover {
   background-color: #2B76F0;
-  color: #0B0A86;
+}
+
+.user-list-section {
+  background-color: white;
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .user-table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 12px;
   background-color: #2B76F0;
   border-radius: 8px;
-  overflow: hidden;
-  color: #fff;
-  border: 1px solid #0B0A86;
+  color: white;
 }
 
 .user-table th {
@@ -206,14 +176,12 @@
   text-align: left;
   padding: 12px;
   font-weight: 600;
-  color: #fff;
   border-bottom: 1px solid #2B76F0;
 }
 
 .user-table td {
   padding: 12px;
   border-bottom: 1px solid #0B0A86;
-  color: #fff;
 }
 
 .user-table tbody tr:hover {
@@ -226,8 +194,8 @@
   background: transparent;
   margin-right: 8px;
   font-size: 18px;
-  color: #666;
-  transition: color 0.2s ease;
+  color: #e0e0e0;
+  transition: color 0.3s;
 }
 
 .edit-btn:hover {
