@@ -23,13 +23,13 @@ const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
 
-  const { logout, user } = useAuth(); 
+  const { logout, user, login, token } = useAuth(); 
 
   const fetchUsers = async () => {
     try {
       const response = await api.get('/users');
       setUsers(response.data);
-      setFilteredUsers(response.data);  // Atualiza o estado de usuários filtrados
+      setFilteredUsers(response.data);  
     } catch (error) {
       console.error('Erro ao buscar usuários', error);
     }
@@ -102,8 +102,15 @@ const Dashboard = () => {
 
     try {
       if (editingUser) {
-        await api.put(`/users/${editingUser.id}`, userData);
+        const response = await api.put(`/users/${editingUser.id}`, userData);
         toast.success('Usuário atualizado com sucesso!');
+        
+        
+        if (user?.id === editingUser.id) {
+          const updatedUser = response.data;
+          login(token, updatedUser); 
+        }
+
       } else {
         await api.post('/users', userData);
         toast.success('Usuário criado com sucesso!');
@@ -118,6 +125,7 @@ const Dashboard = () => {
     }
   };
 
+
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
@@ -127,7 +135,7 @@ const Dashboard = () => {
     );
 
     setFilteredUsers(filtered);
-    setCurrentPage(1);  // Reseta para a primeira página após a busca
+    setCurrentPage(1);  
   };
 
   const indexOfLastUser = currentPage * usersPerPage;
@@ -136,7 +144,7 @@ const Dashboard = () => {
 
   const handleClearSearch = () => {
     setSearchTerm('');
-    setFilteredUsers(users);  // Restaura a lista completa
+    setFilteredUsers(users);  
     setCurrentPage(1);
   };
 
