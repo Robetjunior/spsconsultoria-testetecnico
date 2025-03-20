@@ -4,7 +4,8 @@
   "author": "José Roberto Ferreira Junior (LinkedIn: https://www.linkedin.com/in/jos%C3%A9-roberto-dev/)",
   "scripts": {
     "install-all": "concurrently \"cd spsgroup-backend && npm install\" \"cd sps-web && npm install\"",
-    "dev": "concurrently \"cd spsgroup-backend && npm start\" \"cd sps-web && npm start\""
+    "dev": "concurrently \"cd spsgroup-backend && npm start\" \"cd sps-web && npm start\"",
+    "test-backend": "cd spsgroup-backend && npm test"
   },
   "dependencies": {
     "concurrently": "^9.1.2"
