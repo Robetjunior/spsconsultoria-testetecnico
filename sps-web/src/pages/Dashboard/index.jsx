@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiEdit, FiTrash2, FiUserPlus, FiSearch, FiChevronDown } from 'react-icons/fi';
+import { FiEdit, FiTrash2, FiUserPlus, FiChevronDown } from 'react-icons/fi';
 import api from '../../services/api';
 import UserModal from '../../components/UserModal';
 import ConfirmModal from '../../components/ConfirmModal/index.tsx';
@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -19,12 +20,16 @@ const Dashboard = () => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 5;
+
   const { logout, user } = useAuth(); 
 
   const fetchUsers = async () => {
     try {
       const response = await api.get('/users');
       setUsers(response.data);
+      setFilteredUsers(response.data);  // Atualiza o estado de usuários filtrados
     } catch (error) {
       console.error('Erro ao buscar usuários', error);
     }
@@ -74,7 +79,6 @@ const Dashboard = () => {
     setLoading(true);
   
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
       await api.delete(`/users/${userToDelete}`);
       toast.success('Usuário deletado com sucesso!');
       fetchUsers();
@@ -96,36 +100,50 @@ const Dashboard = () => {
   const handleFormSubmit = async (userData) => {
     setLoading(true);
 
-    setTimeout(async () => {
-      try {
-        if (editingUser) {
-          await api.put(`/users/${editingUser.id}`, userData);
-          toast.success('Usuário atualizado com sucesso!');
-        } else {
-          await api.post('/users', userData);
-          toast.success('Usuário criado com sucesso!');
-        }
-        fetchUsers();
-        handleCloseModal();
-      } catch (error) {
-        console.error('Erro ao salvar usuário', error);
-        toast.error('Falha ao salvar usuário');
-      } finally {
-        setLoading(false);
+    try {
+      if (editingUser) {
+        await api.put(`/users/${editingUser.id}`, userData);
+        toast.success('Usuário atualizado com sucesso!');
+      } else {
+        await api.post('/users', userData);
+        toast.success('Usuário criado com sucesso!');
       }
-    }, 1000);
+      fetchUsers();
+      handleCloseModal();
+    } catch (error) {
+      console.error('Erro ao salvar usuário', error);
+      toast.error('Falha ao salvar usuário');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const filteredUsers = users.filter((u) => {
-    const term = searchTerm.toLowerCase();
-    return (
-      u.name.toLowerCase().includes(term) ||
-      u.email.toLowerCase().includes(term)
+  const handleSearch = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+
+    const filtered = users.filter((u) => 
+      u.name.toLowerCase().includes(term) || u.email.toLowerCase().includes(term)
     );
-  });
+
+    setFilteredUsers(filtered);
+    setCurrentPage(1);  // Reseta para a primeira página após a busca
+  };
+
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
   const handleClearSearch = () => {
     setSearchTerm('');
+    setFilteredUsers(users);  // Restaura a lista completa
+    setCurrentPage(1);
+  };
+
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+
+  const handleClickPage = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -136,14 +154,11 @@ const Dashboard = () => {
             type="text"
             placeholder="Buscar usuário..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleSearch}
           />
           {searchTerm && (
-            <button className="clear-btn" onClick={handleClearSearch}>
-              X
-            </button>
+            <button className="clear-btn" onClick={handleClearSearch}>X</button>
           )}
-
         </div>
 
         <div className="profile-menu">
@@ -162,30 +177,14 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <UserModal
-        isOpen={showModal}
-        onClose={handleCloseModal}
-        onSubmit={handleFormSubmit}
-        initialData={editingUser}
-        loading={loading}
-      />
+      <UserModal isOpen={showModal} onClose={handleCloseModal} onSubmit={handleFormSubmit} initialData={editingUser} loading={loading} />
 
-      <ConfirmModal
-        isOpen={showConfirm}
-        message="Tem certeza que deseja deletar este usuário?"
-        onClose={handleCancelDelete}
-        onConfirm={handleConfirmDelete}
-        loading={loading}
-      />
+      <ConfirmModal isOpen={showConfirm} message="Tem certeza que deseja deletar este usuário?" onClose={handleCancelDelete} onConfirm={handleConfirmDelete} loading={loading} />
 
       <section className="user-list-section">
         <div className="section-header">
           <h3>Lista de Usuários</h3>
-          <button
-            className="create-btn"
-            onClick={handleCreate}
-            disabled={loading}
-          >
+          <button className="create-btn" onClick={handleCreate} disabled={loading}>
             <FiUserPlus size={18} style={{ marginRight: '4px' }}/>
             {loading ? 'Processando...' : 'Criar Usuário'}
           </button>
@@ -202,37 +201,35 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.map((u, i) => (
+            {currentUsers.map((u, i) => (
               <tr key={u.id}>
-                <td>{i + 1}</td>
+                <td>{i + 1 + indexOfFirstUser}</td>
                 <td>{u.name}</td>
                 <td>{u.email}</td>
                 <td>{u.type}</td>
                 <td>
-                  <button
-                    className="action-btn edit-btn"
-                    onClick={() => handleEdit(u)}
-                    disabled={loading}
-                  >
-                    <FiEdit />
-                  </button>
-                  <button
-                    className="action-btn delete-btn"
-                    onClick={() => confirmDeleteUser(u.id)}
-                    disabled={loading}
-                  >
-                    <FiTrash2 />
-                  </button>
+                  <button className="action-btn edit-btn" onClick={() => handleEdit(u)}><FiEdit /></button>
+                  <button className="action-btn delete-btn" onClick={() => confirmDeleteUser(u.id)}><FiTrash2 /></button>
                 </td>
               </tr>
             ))}
-            {filteredUsers.length === 0 && (
+            {currentUsers.length === 0 && (
               <tr>
                 <td colSpan="5">Nenhum usuário encontrado.</td>
               </tr>
             )}
           </tbody>
         </table>
+
+        {totalPages > 1 && (
+          <div className="pagination">
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button key={i} className={`pagination-btn ${currentPage === i + 1 ? 'active' : ''}`} onClick={() => handleClickPage(i + 1)}>
+                {i + 1}
+              </button>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

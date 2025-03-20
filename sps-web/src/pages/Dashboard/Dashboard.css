@@ -205,3 +205,30 @@
 .delete-btn:hover {
   color: #e12727;
 }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  gap: 8px;
+}
+
+.pagination-btn {
+  padding: 8px 12px;
+  border: 1px solid #0B0A86;
+  background-color: white;
+  color: #0B0A86;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.pagination-btn:hover {
+  background-color: #0B0A86;
+  color: white;
+}
+
+.pagination-btn.active {
+  background-color: #2B76F0;
+  color: white;
+}
