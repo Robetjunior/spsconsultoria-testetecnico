@@ -84,6 +84,25 @@ npm run dev
 Backend em: http://localhost:3000  
 Frontend em: http://localhost:3001
 
+## Executando Testes do Backend
+
+Para rodar os testes unitários do backend, há duas opções:
+
+1. Acesse a pasta do backend:
+```
+cd spsgroup-backend
+```
+
+2. Instale as dependências (caso não tenha feito):
+```
+npm install
+```
+
+3. Execute os testes:
+```
+npm test
+```
+
 ### Autor
 José Roberto Ferreira Junior
 
